@@ -15,7 +15,7 @@ struct ConcreteConverterService: ConverterService {
 					image: UIImage?,
 					repositories: [RepositoryJSON]) -> User {
 		let name = user.name
-		var repositories = repositories.map {
+		let repositories = repositories.map {
 			Repository(name: $0.name, languages: $0.languages.sorted(by: < ))
 		}
 		return User(name: name, image: image, repositories: repositories)

@@ -4,6 +4,7 @@ import UIKit
 
 protocol SearchControllerDelegate {
 	func showAlert(withMessage: String)
+	func isLoading() -> Bool
 	func showLoading()
 	func dismissLoading()
 	func displayList(user: User)
@@ -27,8 +28,10 @@ class SearchController: UIViewController, SearchControllerDelegate {
 	
 	lazy var submitButton: UIButton = {
 		let action = UIAction { [weak self] _ in
-			//			model
-			
+			guard let name = self?.textField.text, !name.isEmpty else {
+				return
+			}
+			self?.model.fetchUser(withName: name)
 		}
 		
 		var configuration: UIButton.Configuration = .bordered()
@@ -53,6 +56,7 @@ class SearchController: UIViewController, SearchControllerDelegate {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		self.title = "Github Viewer"
+		self.navigationItem.backButtonTitle = "Back"
 		view.backgroundColor = .systemBackground
 	}
 	
@@ -74,6 +78,10 @@ class SearchController: UIViewController, SearchControllerDelegate {
 		self.present(alert, animated: true)
 	}
 	
+	func isLoading() -> Bool {
+		return !submitButton.isEnabled
+	}
+	
 	func showLoading() {
 		submitButton.isEnabled = false
 	}
@@ -83,7 +91,9 @@ class SearchController: UIViewController, SearchControllerDelegate {
 	}
 	
 	func displayList(user: User) {
+		let listVC = ListViewController(user: user)
 		
+		self.navigationController?.pushViewController(listVC, animated: true)
 	}
 }
 
@@ -95,7 +105,6 @@ extension SearchController {
 		view.addSubview(textField)
 		view.addSubview(submitButton)
 		view.addGestureRecognizer(gesture)
-		
 		makeTextfieldConstraints()
 		makeButtonConstraints()
 	}

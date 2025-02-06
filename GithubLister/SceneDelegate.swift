@@ -24,8 +24,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	func addServiceLocator() -> ServiceLocator {
 		let decoder = ConcreteDecoderService()
 		let network = ConcreteNetworkService(decoderService: decoder)
+		let converter = ConcreteConverterService()
 		return ConcreteServiceLocator(networkService: network,
-										 decoderService: decoder)
+									  decoderService: decoder,
+									  converterService: converter
+		)
 	}
 	
 	func makeSearchViewController(locator: ServiceLocator) -> SearchController {

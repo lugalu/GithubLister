@@ -5,7 +5,7 @@ import Foundation
 struct UserJSON: Decodable {
 	let name: String
 	let avatar_url: String
-	let repo_url: String
+	let repos_url: String
 }
 
 struct RepositoryJSON: Decodable {
