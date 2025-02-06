@@ -2,7 +2,16 @@
 
 import UIKit
 
-class SearchController: UIViewController {
+protocol SearchControllerDelegate {
+	func showAlert(withMessage: String)
+	func showLoading()
+	func dismissLoading()
+	func displayList(user: User)
+}
+
+class SearchController: UIViewController, SearchControllerDelegate {
+	
+	private var model: SearchModel
 	
 	lazy var textField: UITextField = {
 		let text = UITextField()
@@ -18,7 +27,8 @@ class SearchController: UIViewController {
 	
 	lazy var submitButton: UIButton = {
 		let action = UIAction { [weak self] _ in
-			print("submit!")
+			//			model
+			
 		}
 		
 		var configuration: UIButton.Configuration = .bordered()
@@ -30,6 +40,16 @@ class SearchController: UIViewController {
 		return btn
 	}()
 	
+	init(model: SearchModel) {
+		self.model = model
+		super.init(nibName: nil, bundle: nil)
+		model.assign(delegate: self)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		self.title = "Github Viewer"
@@ -38,9 +58,36 @@ class SearchController: UIViewController {
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-
 		setupUI()
 	}
+	
+	func showAlert(withMessage message: String) {
+		let alert = UIAlertController(
+			title: "Error",
+			message: message,
+			preferredStyle: .alert
+		)
+		
+		let action = UIAlertAction(title: "Ok", style: .default)
+		
+		alert.addAction(action)
+		self.present(alert, animated: true)
+	}
+	
+	func showLoading() {
+		submitButton.isEnabled = false
+	}
+	
+	func dismissLoading() {
+		submitButton.isEnabled = true
+	}
+	
+	func displayList(user: User) {
+		
+	}
+}
+
+extension SearchController {
 	
 	func setupUI() {
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(onTap))
@@ -72,11 +119,6 @@ class SearchController: UIViewController {
 		
 		NSLayoutConstraint.activate(constraints)
 	}
-	
-	@objc
-	func onTap() {
-		textField.resignFirstResponder()
-	}
 }
 
 extension SearchController: UITextFieldDelegate {
@@ -86,5 +128,11 @@ extension SearchController: UITextFieldDelegate {
 		return false
 	}
 	
-
+	@objc
+	func onTap() {
+		textField.resignFirstResponder()
+	}
+	
 }
+
+

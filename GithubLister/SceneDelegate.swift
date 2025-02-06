@@ -5,15 +5,32 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 	var window: UIWindow?
-
+	var locator: ServiceLocator?
 
 	func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 		guard let windowScene = (scene as? UIWindowScene) else { return }
 		window = UIWindow(windowScene: windowScene)
 		
-		let search = SearchController()
+		locator = addServiceLocator()
+		guard let locator else {
+			fatalError("Error initializing the ServiceLocator")
+		}
+		
+		let search = makeSearchViewController(locator: locator)
 		window?.rootViewController = makeNavigation(root: search)
 		window?.makeKeyAndVisible()
+	}
+	
+	func addServiceLocator() -> ServiceLocator {
+		let decoder = ConcreteDecoderService()
+		let network = ConcreteNetworkService(decoderService: decoder)
+		return ConcreteServiceLocator(networkService: network,
+										 decoderService: decoder)
+	}
+	
+	func makeSearchViewController(locator: ServiceLocator) -> SearchController {
+		let searchModel = ConcreteSearchModel(locator: locator)
+		return SearchController(model: searchModel)
 	}
 	
 	func makeNavigation(root: UIViewController) -> UINavigationController {
@@ -23,7 +40,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		navigation.navigationBar.prefersLargeTitles = false
 		navigation.navigationBar.isTranslucent = false
 		
-		//makes the statusBar and the navigation the same color
+		//Needed for the statusBar and navigationBar to be the same color
 		let navigationAppearence = UINavigationBarAppearance()
 		navigationAppearence.backgroundColor = .secondarySystemFill
 		navigation.navigationBar.scrollEdgeAppearance = navigationAppearence
@@ -31,35 +48,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		
 		return navigation
 	}
-	
-	func sceneDidDisconnect(_ scene: UIScene) {
-		// Called as the scene is being released by the system.
-		// This occurs shortly after the scene enters the background, or when its session is discarded.
-		// Release any resources associated with this scene that can be re-created the next time the scene connects.
-		// The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
-	}
-
-	func sceneDidBecomeActive(_ scene: UIScene) {
-		// Called when the scene has moved from an inactive state to an active state.
-		// Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-	}
-
-	func sceneWillResignActive(_ scene: UIScene) {
-		// Called when the scene will move from an active state to an inactive state.
-		// This may occur due to temporary interruptions (ex. an incoming phone call).
-	}
-
-	func sceneWillEnterForeground(_ scene: UIScene) {
-		// Called as the scene transitions from the background to the foreground.
-		// Use this method to undo the changes made on entering the background.
-	}
-
-	func sceneDidEnterBackground(_ scene: UIScene) {
-		// Called as the scene transitions from the foreground to the background.
-		// Use this method to save data, release shared resources, and store enough scene-specific state information
-		// to restore the scene back to its current state.
-	}
-
 
 }
 
