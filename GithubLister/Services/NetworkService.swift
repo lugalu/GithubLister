@@ -19,6 +19,7 @@ protocol NetworkService {
 class ConcreteNetworkService: NetworkService {
 	let decoderService: DecoderService
 	
+	
 	init(decoderService: DecoderService) {
 		self.decoderService = decoderService
 	}
@@ -72,19 +73,7 @@ class ConcreteNetworkService: NetworkService {
 		}
 		
 		let data = try await downloadData(url: url)
-		var result = try decoderService.decode(data, class: [RepositoryJSON].self)
-		
-		for (idx, repo) in result.enumerated() {
-			guard let languageURL = URL(string: repo.languages_url),
-				  let languageData = try? await downloadData(url: languageURL),
-				  let languagesDict = try? decoderService.decode(languageData)
-			else {
-				continue
-			}
-			
-			let languages = Array(languagesDict.keys)
-			result[idx].addLanguages(languages)
-		}
+		let result = try decoderService.decode(data, class: [RepositoryJSON].self)
 		
 		return result
 	}

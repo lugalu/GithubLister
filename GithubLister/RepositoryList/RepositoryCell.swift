@@ -29,11 +29,7 @@ class RepositoryCell: UITableViewCell {
 		}
 		
 		repositoryName.text = repo.name
-		repositoryLanguages.text = repo.languages
-			.map({
-				$0.capitalized
-			})
-			.joined(separator: ", ")
+		repositoryLanguages.text = repo.language.capitalized
 	}
 	
 	func makeUI () {

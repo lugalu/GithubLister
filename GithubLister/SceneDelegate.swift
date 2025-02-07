@@ -31,9 +31,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		)
 	}
 	
-	func makeSearchViewController(locator: ServiceLocator) -> SearchController {
+	func makeSearchViewController(locator: ServiceLocator) -> SearchViewController {
 		let searchModel = ConcreteSearchModel(locator: locator)
-		return SearchController(model: searchModel)
+		return SearchViewController(model: searchModel)
 	}
 	
 	func makeNavigation(root: UIViewController) -> UINavigationController {

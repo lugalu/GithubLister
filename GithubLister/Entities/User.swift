@@ -10,5 +10,5 @@ struct User {
 
 struct Repository {
 	var name: String
-	var languages: [String]
+	var language: String
 }

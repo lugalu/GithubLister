@@ -2,7 +2,7 @@
 
 import UIKit
 
-protocol SearchControllerDelegate {
+protocol SearchViewControllerDelegate {
 	func showAlert(withMessage: String)
 	func isLoading() -> Bool
 	func showLoading()
@@ -10,7 +10,7 @@ protocol SearchControllerDelegate {
 	func displayList(user: User)
 }
 
-class SearchController: UIViewController, SearchControllerDelegate {
+class SearchViewController: UIViewController, SearchViewControllerDelegate {
 	
 	private var model: SearchModel
 	
@@ -26,7 +26,7 @@ class SearchController: UIViewController, SearchControllerDelegate {
 		return text
 	}()
 	
-	lazy var submitButton: UIButton = {
+	lazy var submitButton: SpinnerButton = {
 		let action = UIAction { [weak self] _ in
 			guard let name = self?.textField.text, !name.isEmpty else {
 				return
@@ -34,10 +34,13 @@ class SearchController: UIViewController, SearchControllerDelegate {
 			self?.model.fetchUser(withName: name)
 		}
 		
-		var configuration: UIButton.Configuration = .bordered()
+		var configuration: UIButton.Configuration = .plain()
 		configuration.title = "Search"
 		
-		let btn = UIButton(configuration: configuration, primaryAction: action)
+		let btn = SpinnerButton(
+			configuration: configuration,
+			primaryAction: action
+		)
 		btn.translatesAutoresizingMaskIntoConstraints = false
 		
 		return btn
@@ -79,15 +82,17 @@ class SearchController: UIViewController, SearchControllerDelegate {
 	}
 	
 	func isLoading() -> Bool {
-		return !submitButton.isEnabled
+		return submitButton.isLoading
 	}
 	
 	func showLoading() {
-		submitButton.isEnabled = false
+		submitButton.isLoading = true
+		textField.isEnabled = false
 	}
 	
 	func dismissLoading() {
-		submitButton.isEnabled = true
+		submitButton.isLoading = false
+		textField.isEnabled = true
 	}
 	
 	func displayList(user: User) {
@@ -97,7 +102,7 @@ class SearchController: UIViewController, SearchControllerDelegate {
 	}
 }
 
-extension SearchController {
+extension SearchViewController {
 	
 	func setupUI() {
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(onTap))
@@ -130,7 +135,7 @@ extension SearchController {
 	}
 }
 
-extension SearchController: UITextFieldDelegate {
+extension SearchViewController: UITextFieldDelegate {
 	
 	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 		textField.resignFirstResponder()

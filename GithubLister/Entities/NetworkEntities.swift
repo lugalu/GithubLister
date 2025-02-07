@@ -10,17 +10,5 @@ struct UserJSON: Decodable {
 
 struct RepositoryJSON: Decodable {
 	let name: String
-	let languages_url: String
-	
-	enum CodingKeys: CodingKey {
-		case name
-		case languages_url
-	}
-	
-	private(set) var languages: [String] = []
-	
-	
-	mutating func addLanguages(_ languages: [String]) {
-		
-	}
+	let language: String?
 }

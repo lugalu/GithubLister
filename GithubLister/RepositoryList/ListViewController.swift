@@ -176,17 +176,3 @@ extension ListViewController {
 	}
 }
 
-
-
-#Preview{
-	let list =	ListViewController(
-		user: User(
-			name: "asdasd",
-			image: nil,
-			repositories: [Repository(name: "Test", languages: ["Test"])]
-		)
-	)
-	let navigation = UINavigationController(rootViewController: list)
-	navigation.navigationBar.prefersLargeTitles = true
-	return navigation
-}
