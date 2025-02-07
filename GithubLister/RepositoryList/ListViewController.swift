@@ -6,10 +6,12 @@ class ListViewController: UIViewController {
 	private(set) var user: User
 	
 	lazy var tableView: UITableView = {
-		let table = UITableView(frame: .zero, style: .grouped)
+		let table = UITableView(frame: .zero, style: .plain)
 		table.dataSource = self
 		table.translatesAutoresizingMaskIntoConstraints = false
 		table.backgroundColor = .clear
+		table.register(RepositoryCell.self,
+					   forCellReuseIdentifier: RepositoryCell.Identifier)
 		
 		return table
 	}()
@@ -42,6 +44,37 @@ class ListViewController: UIViewController {
 	}
 
 
+}
+
+extension ListViewController: UITableViewDataSource {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		if user.repositories.isEmpty {
+			let size = tableView.bounds.size
+			let noDataLabel: UILabel  = UILabel(frame: .init( origin: .zero,
+					size: .init(width: size.width, height: size.height)
+				))
+			noDataLabel.text          = "This user has no repositories available"
+			noDataLabel.textAlignment = .center
+			tableView.backgroundView  = noDataLabel
+			tableView.separatorStyle  = .none
+			
+			return 0
+		}
+		
+		tableView.separatorStyle = .singleLine
+		tableView.backgroundView = nil
+		return user.repositories.count
+	}
+	
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		guard let cell = tableView.dequeueReusableCell(withIdentifier: RepositoryCell.Identifier) as? RepositoryCell else {
+			return UITableViewCell()
+		}
+		cell.configure(with: user.repositories[indexPath.row])
+		return cell
+	}
+	
+	
 }
 
 extension ListViewController {
@@ -144,29 +177,6 @@ extension ListViewController {
 }
 
 
-extension ListViewController: UITableViewDataSource {
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		if user.repositories.isEmpty {
-			let noDataLabel: UILabel  = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
-			noDataLabel.text          = "This user has no repositories available"
-			noDataLabel.textAlignment = .center
-			tableView.backgroundView  = noDataLabel
-			tableView.separatorStyle  = .none
-			
-			return 0
-		}
-		
-		tableView.separatorStyle = .singleLine
-		tableView.backgroundView = nil
-		return user.repositories.count
-	}
-	
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		UITableViewCell()
-	}
-	
-	
-}
 
 #Preview{
 	let list =	ListViewController(

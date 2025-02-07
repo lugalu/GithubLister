@@ -15,7 +15,8 @@ class RepositoryCell: UITableViewCell {
 	
 	lazy var repositoryLanguages: UILabel = {
 		let label = UILabel()
-		label.font = .systemFont(ofSize: 12)
+		label.font = .systemFont(ofSize: 13)
+		label.textColor = .secondaryLabel
 		label.translatesAutoresizingMaskIntoConstraints = false
 		return label
 	}()
@@ -26,11 +27,41 @@ class RepositoryCell: UITableViewCell {
 		if (repositoryName.superview == nil) {
 			makeUI()
 		}
+		
+		repositoryName.text = repo.name
+		repositoryLanguages.text = repo.languages
+			.map({
+				$0.capitalized
+			})
+			.joined(separator: ", ")
 	}
 	
 	func makeUI () {
-		self.addSubview(repositoryName)
-		self.addSubview(repositoryLanguages)
-		//add constraints
+		contentView.addSubview(repositoryName)
+		contentView.addSubview(repositoryLanguages)
+		
+		makeNameConstraints()
+		makeLanguagesConstraints()
 	}
+	
+	func makeNameConstraints() {
+		let view = contentView
+		let constraints = [
+			repositoryName.topAnchor.constraint(equalTo: view.topAnchor,constant: 8),
+			repositoryName.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8)
+		]
+		NSLayoutConstraint.activate(constraints)
+	}
+	
+	func makeLanguagesConstraints() {
+		let view = contentView
+		let constraints = [
+			repositoryLanguages.topAnchor.constraint(equalTo: repositoryName.bottomAnchor, constant: 4),
+			repositoryLanguages.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+			repositoryLanguages.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -4)
+		]
+		
+		NSLayoutConstraint.activate(constraints);
+	}
+	
 }
