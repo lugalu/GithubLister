@@ -39,13 +39,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 	func makeNavigation(root: UIViewController) -> UINavigationController {
 		
 		let navigation = UINavigationController(rootViewController: root)
-		navigation.toolbar.backgroundColor = .secondarySystemFill
+		navigation.toolbar.backgroundColor = .secondarySystemBackground
 		navigation.navigationBar.prefersLargeTitles = false
 		navigation.navigationBar.isTranslucent = false
 		
 		//Needed for the statusBar and navigationBar to be the same color
 		let navigationAppearence = UINavigationBarAppearance()
-		navigationAppearence.backgroundColor = .secondarySystemFill
+		navigationAppearence.backgroundColor = .secondarySystemBackground
 		navigation.navigationBar.scrollEdgeAppearance = navigationAppearence
 
 		
